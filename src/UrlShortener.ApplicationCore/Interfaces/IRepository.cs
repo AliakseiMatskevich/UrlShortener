@@ -10,7 +10,9 @@ namespace UrlShortener.ApplicationCore.Interfaces
 {
     public interface IRepository<T> where T : BaseEntity
     {
-        IQueryable<T> GetList();
+        IQueryable<T> GetEntities();
         Task<T> CreateAsync(T entity);
+        Task DeleteAsync(T entity);
+        Task<T?> GetByIdAsync(Guid id);
     }
 }

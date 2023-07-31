@@ -1,10 +1,30 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
+using UrlShortener.Api.Interfaces;
+using UrlShortener.Api.Services;
+using UrlShortener.ApplicationCore.Interfaces;
 using UrlShortener.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+#region Configure DbContext
 builder.Services.AddDbContext<UrlShortenerContext>(context => context.UseSqlServer(builder.Configuration.GetConnectionString("UrlShortenerConnection")));
+#endregion
+
+#region Configure AutoMapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+#endregion
+
+#region Configure MediatR
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+#endregion
+
+#region Configure Own Servises
+//Add own services to the container
+builder.Services.AddScoped(typeof(IRepository<>), typeof(EFRepository<>));
+builder.Services.AddScoped(typeof(IUrlService), typeof(UrlService));
+#endregion
 // Add services to the container.
 
 builder.Services.AddControllers();
