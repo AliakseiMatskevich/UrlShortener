@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using System.Reflection;
 using UrlShortener.Api.Interfaces;
 using UrlShortener.Api.Services;
@@ -8,8 +9,30 @@ using UrlShortener.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+#region Configure cors policy
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+#endregion
+
 #region Configure DbContext
 builder.Services.AddDbContext<UrlShortenerContext>(context => context.UseSqlServer(builder.Configuration.GetConnectionString("UrlShortenerConnection")));
+#endregion
+
+#region Configure Serilog
+var logger = new LoggerConfiguration()
+        .ReadFrom.Configuration(builder.Configuration)
+        .Enrich.FromLogContext()
+        .CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 #endregion
 
 #region Configure AutoMapper
@@ -64,6 +87,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors();
+
+app.UseRouting();
 
 app.UseAuthorization();
 
