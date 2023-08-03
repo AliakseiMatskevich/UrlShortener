@@ -19,9 +19,12 @@ builder.Logging.AddSerilog(logger);
 builder.Services.AddScoped(typeof(IUrlService), typeof(UrlService));
 #endregion
 
-// Add services to the container.
-builder.Services.AddRazorPages();
-
+#region Configure razor pages
+builder.Services.AddRazorPages()
+    .AddRazorPagesOptions(options => {
+        options.Conventions.AddPageRoute("/Index", "");
+    });
+#endregion
 var app = builder.Build();
 
 app.Logger.LogInformation("App created...");
