@@ -4,6 +4,7 @@ using UrlShortener.Api.DTOs.Requests.Url;
 using UrlShortener.Api.CQRS.Urls.Commands.CreateUrl;
 using UrlShortener.Api.CQRS.Urls.Commands.DeleteUrl;
 using UrlShortener.Api.Handlers.Urls.Queries.GetUrls;
+using UrlShortener.Api.CQRS.Urls.Queries.GetUrlByShortGuid;
 
 namespace UrlShortener.Api.Controllers
 {
@@ -26,6 +27,19 @@ namespace UrlShortener.Api.Controllers
             if (urls != null)
             {
                 return Ok(urls);
+            }
+
+            return NotFound("No urls in database. Please add a url first.");
+        }
+
+        [HttpGet("{shortGuid}")]
+        public async Task<IActionResult> GetUrlByShortguid(string shortGuid)
+        {
+            var url = await _mediator.Send(new GetUrlByShortGuidQuery(shortGuid));
+
+            if (url != null)
+            {
+                return Ok(url);
             }
 
             return NotFound("No urls in database. Please add a url first.");

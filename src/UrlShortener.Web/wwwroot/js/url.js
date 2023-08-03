@@ -29,6 +29,19 @@ const createUrl = async () => {
         alert("Url created successful!");
     }
     else {
-        alert("Person creation failed! Try again!");
+        alert("Url creation failed! Try again!");
     }
+};
+
+const deleteUrl = async (id) => {
+
+    fetch(apiUrl + "/" + id, {
+        method: 'DELETE'
+    }).then(() => {
+        const row = document.getElementById(id);
+        row.remove();
+        console.log('removed');
+    }).catch(err => {
+        console.error(err)
+    });
 };

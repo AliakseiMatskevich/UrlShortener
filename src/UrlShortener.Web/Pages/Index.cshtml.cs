@@ -18,10 +18,20 @@ namespace UrlShortener.Web.Pages
         }
 
         public IEnumerable<UrlViewModel>? Urls = null;
-
-        public void OnGet()
+       
+        public IActionResult? OnGet(string? urlShortGuid = null)
         {
+            if (urlShortGuid != null)
+            {
+                var url = _urlService.GetUrlByShortGuid(urlShortGuid);
+                if (url != null)
+                {
+                    return new RedirectResult(url.OriginalUrl!);
+                }
+            }
+            
             Urls = _urlService.GetUrls();
+            return default;                  
         }
     }
 }

@@ -13,6 +13,31 @@ namespace UrlShortener.Web.Services
             _configuration = configuration;
 
         }
+
+        public UrlViewModel? GetUrlByShortGuid(string shortGuid)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(_configuration.GetValue<string>("UrlApiUrl")!);
+                //HTTP GET
+                var responseTask = client.GetAsync($"Url/{shortGuid}");
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadFromJsonAsync<UrlViewModel>();
+                    readTask.Wait();
+
+                    return readTask.Result!;
+                }
+                else
+                {
+                    return default;
+                }
+            }
+        }
+
         public IEnumerable<UrlViewModel> GetUrls()
         {
             using (var client = new HttpClient())

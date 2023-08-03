@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{urlShortGuid}"
 @model IndexModel
 @{
     ViewData["Title"] = "Urls Shortener";
@@ -16,14 +16,16 @@
             <tr>
                 <th scope="col">Original Url</th>
                 <th scope="col">Short url</th>
+                <th scope="col">Delete</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var url in Model.Urls!)
             {
-                <tr>
+                <tr id="@url.Id">
                     <td>@url.OriginalUrl</td>
                     <td>@url.ShortUrl</td>
+                    <td><button type="button" onclick="deleteUrl('@url.Id')"><i class="bi bi-trash"></i></button></td>
                 </tr>
             }
         </tbody>
