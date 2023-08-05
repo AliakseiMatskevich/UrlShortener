@@ -38,6 +38,7 @@ builder.Services
 
 #region Configure own services
 builder.Services.AddScoped(typeof(IUrlService), typeof(UrlService));
+builder.Services.AddScoped(typeof(IUserService), typeof(UserService));
 #endregion
 
 #region Configure razor pages

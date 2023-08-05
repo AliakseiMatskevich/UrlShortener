@@ -9,12 +9,15 @@ namespace UrlShortener.Web.Pages
     {
         private readonly ILogger<IndexModel> _logger;
         private readonly IUrlService _urlService;
+        private readonly IUserService _userService; 
 
         public IndexModel(ILogger<IndexModel> logger,
-            IUrlService urlService)
+            IUrlService urlService,
+            IUserService userService)
         {
             _logger = logger;
             _urlService = urlService;
+            _userService = userService;
         }
 
         public IEnumerable<UrlViewModel>? Urls = null;
@@ -29,7 +32,7 @@ namespace UrlShortener.Web.Pages
                     return new RedirectResult(url.OriginalUrl!);
                 }
             }
-            
+            var userId = _userService.GetUserId();
             Urls = _urlService.GetUrls();
             return default;                  
         }
