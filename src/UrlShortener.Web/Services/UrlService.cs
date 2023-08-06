@@ -6,18 +6,20 @@ namespace UrlShortener.Web.Services
     public class UrlService : IUrlService
     {
         private readonly IConfiguration _configuration;
+        private readonly ILogger<UrlService> _logger;
 
-        public UrlService(IConfiguration configuration)
+        public UrlService(IConfiguration configuration, 
+            ILogger<UrlService> logger)
         {
-
             _configuration = configuration;
-
+            _logger = logger;
         }
 
         public UrlViewModel? GetUrlByShortGuid(string shortGuid)
         {
             using (var client = new HttpClient())
             {
+                _logger.LogInformation($"Get url by short guid = {shortGuid}");
                 client.BaseAddress = new Uri(_configuration.GetValue<string>("UrlApiUrl")!);
                 //HTTP GET
                 var responseTask = client.GetAsync($"Url/{shortGuid}");
@@ -42,6 +44,7 @@ namespace UrlShortener.Web.Services
         {
             using (var client = new HttpClient())
             {
+                _logger.LogInformation($"Get urls for user id = {userId}");
                 client.BaseAddress = new Uri(_configuration.GetValue<string>("UrlApiUrl")!);
                 //HTTP GET
                 var responseTask = client.GetAsync($"Url/{userId}");
