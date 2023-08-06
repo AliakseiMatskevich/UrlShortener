@@ -33,7 +33,7 @@ namespace UrlShortener.Web.Pages
                 }
             }
             var userId = _userService.GetUserId();
-            Urls = _urlService.GetUrls();
+            Urls = _urlService.GetUrls(userId);
             return default;                  
         }
     }

@@ -11,15 +11,17 @@ namespace UrlShortener.Api.Handlers.Urls.Queries.GetUrls
     {
         private readonly IRepository<Url> _repository;
         private readonly IMapper _mapper;
+
         public GetUrlsQueryHandler(IRepository<Url> repository,
                                        IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
         }
+
         public async Task<IList<GetUrlDto>> Handle(GetUrlsQuery request, CancellationToken cancellationToken)
         {
-            var urls = await _repository.GetEntities().ToListAsync(cancellationToken);
+            var urls = await _repository.GetEntities().Where(x => x.UserId.Equals(request.UserId)).ToListAsync(cancellationToken);
             var urlList = _mapper.Map<IList<GetUrlDto>>(urls);
                 
             return urlList;

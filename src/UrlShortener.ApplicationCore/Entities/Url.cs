@@ -11,5 +11,6 @@ namespace UrlShortener.ApplicationCore.Entities
     {
         public string? OriginalUrl { get; set; }
         public string? ShortUrl { get; set; }
+        public Guid UserId { get; set; }
     }
 }
