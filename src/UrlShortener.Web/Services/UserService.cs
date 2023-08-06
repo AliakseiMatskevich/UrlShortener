@@ -2,6 +2,7 @@
 using Azure;
 using UrlShortener.Web.Interfaces;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace UrlShortener.Web.Services
 {
@@ -17,24 +18,37 @@ namespace UrlShortener.Web.Services
         {
             Guid userId = default;
             var httpContext = _httpContextAccessor.HttpContext!;
-
+            var cookieUserId = httpContext.Request.Cookies[Constants.AnonymousUserIdCookieName];
             if (httpContext.User.Identity!.IsAuthenticated)
             {
-               return Guid.Parse(httpContext.User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+                userId = Guid.Parse(httpContext.User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             }
-
-            if (httpContext.Request.Cookies.ContainsKey("UrlShortenerUserId"))
+            else if (cookieUserId != null)
             {
-                userId = Guid.Parse(httpContext.Request.Cookies["UrlShortenerUserId"]!);
+                userId = Guid.Parse(cookieUserId);
             }
 
-            if (userId != default) return userId;
+            if (userId == default)
+            {
+                userId = Guid.NewGuid();
+                SetCookieUserId(Constants.AnonymousUserIdCookieName, userId.ToString());                
+            }
 
-            userId = Guid.NewGuid();
-            var cookieOptions = new CookieOptions();
-            cookieOptions.Expires = DateTime.Now.AddDays(365);
-            httpContext.Response.Cookies.Append("UrlShortenerUserId", userId.ToString(), cookieOptions);
+            SetCookieUserId(Constants.CurrentUserIdCookieName, userId.ToString());
+
             return userId;
+        }
+
+        private void SetCookieUserId(string cookieName, string cookieValue)
+        {
+            var httpContext = _httpContextAccessor.HttpContext!;
+            string? currentCookieValue = httpContext.Request.Cookies[cookieName];
+            if (currentCookieValue != cookieValue)
+            {
+                CookieOptions cookieOptions = new CookieOptions();
+                cookieOptions.Expires = DateTime.UtcNow.AddDays(365);
+                httpContext.Response.Cookies.Append(cookieName, cookieValue, cookieOptions!);
+            }            
         }
     }
 }

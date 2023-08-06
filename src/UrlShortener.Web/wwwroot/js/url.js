@@ -10,7 +10,8 @@ const createUrl = async () => {
 
     const data = {
         OriginalUrl: document.getElementById("originalUrl").value,
-        Host: location.protocol + '//' + location.host
+        Host: location.protocol + '//' + location.host,
+        UserId: getCookie("CurrentUserId")
     };
 
     console.log('Data to be sent:', JSON.stringify(data));
@@ -45,3 +46,12 @@ const deleteUrl = async (id) => {
         console.error(err)
     });
 };
+
+function getCookie(cookieName) {
+    let cookie = {};
+    document.cookie.split(';').forEach(function (el) {
+        let [key, value] = el.split('=');
+        cookie[key.trim()] = value;
+    })
+    return cookie[cookieName];
+}

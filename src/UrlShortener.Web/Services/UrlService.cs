@@ -38,13 +38,13 @@ namespace UrlShortener.Web.Services
             }
         }
 
-        public IEnumerable<UrlViewModel> GetUrls()
+        public IEnumerable<UrlViewModel> GetUrls(Guid userId)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(_configuration.GetValue<string>("UrlApiUrl")!);
                 //HTTP GET
-                var responseTask = client.GetAsync("Url");
+                var responseTask = client.GetAsync($"Url/{userId}");
                 responseTask.Wait();
 
                 var result = responseTask.Result;
