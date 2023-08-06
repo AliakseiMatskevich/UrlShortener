@@ -9,10 +9,13 @@ namespace UrlShortener.Web.Services
     public class UserService : IUserService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ILogger<UserService> _logger;
 
-        public UserService(IHttpContextAccessor httpContextAccessor)
+        public UserService(IHttpContextAccessor httpContextAccessor, 
+            ILogger<UserService> logger)
         {
             _httpContextAccessor = httpContextAccessor;
+            _logger = logger;
         }
         public Guid GetUserId()
         {
@@ -34,6 +37,7 @@ namespace UrlShortener.Web.Services
                 SetCookieUserId(Constants.AnonymousUserIdCookieName, userId.ToString());                
             }
 
+            _logger.LogInformation($"Get User Id {userId}");
             SetCookieUserId(Constants.CurrentUserIdCookieName, userId.ToString());
 
             return userId;
@@ -45,6 +49,7 @@ namespace UrlShortener.Web.Services
             string? currentCookieValue = httpContext.Request.Cookies[cookieName];
             if (currentCookieValue != cookieValue)
             {
+                _logger.LogInformation($"Set Cookie name: {cookieName} = {cookieValue}");
                 CookieOptions cookieOptions = new CookieOptions();
                 cookieOptions.Expires = DateTime.UtcNow.AddDays(365);
                 httpContext.Response.Cookies.Append(cookieName, cookieValue, cookieOptions!);

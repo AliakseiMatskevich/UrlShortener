@@ -5,15 +5,17 @@ namespace UrlShortener.Api.Services
 {
     public class UrlService : IUrlService
     {
-        //private readonly IHttpContextAccessor _httpContextAccessor;
-        public UrlService(/*IHttpContextAccessor httpContextAccessor*/)
+        private readonly ILogger<UrlService> _logger;
+        public UrlService(ILogger<UrlService> logger)
         {
-            //_httpContextAccessor = httpContextAccessor;
+
+            _logger = logger;
+
         }
         public string CreateShortUrl(string host)
-        {
-            //var shortUrl = $"{_httpContextAccessor.HttpContext!.Request.Scheme}://{_httpContextAccessor.HttpContext!.Request.Host}/{(ShortGuid)Guid.NewGuid()}";
+        {            
             var shortUrl = $"{host}/{(ShortGuid) Guid.NewGuid()}";
+            _logger.LogInformation($"Create new short url {shortUrl}");
             return shortUrl;
         }
     }
