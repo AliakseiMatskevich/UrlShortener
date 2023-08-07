@@ -23,7 +23,7 @@ namespace UrlShortener.ApplicationCore.Attributes.Validation
             if (url is null)
                 return false;
 
-            return Uri.TryCreate("dsfgsdfhs", UriKind.Absolute, out Uri? uri) && uri!.Scheme == Uri.UriSchemeHttps;
+            return Uri.TryCreate(url, UriKind.Absolute, out Uri? uri) && uri!.Scheme == Uri.UriSchemeHttps;
         }
     }
 }

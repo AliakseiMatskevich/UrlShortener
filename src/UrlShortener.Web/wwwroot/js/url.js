@@ -3,18 +3,20 @@
 }
 
 const apiUrl = 'https://localhost:7131/api/Url';
+const originalUrlId = 'originalUrl';
+const originalUrlValidationId = 'originalUrlValidation';
+const currentUserIdCookieName = 'CurrentUserId';
 
 const createUrl = async () => {
-
-    const originalUrl = document.getElementById("originalUrl").value;
+    const originalUrl = document.getElementById(originalUrlId).value;
     if (isValidUrl(originalUrl)) {
-        document.getElementById("originalUrlValidation").innerHTML = ""
+        document.getElementById(originalUrlValidationId).innerHTML = ""
         const form = document.querySelector('form');
 
         const data = {
             OriginalUrl: originalUrl,
             Host: location.protocol + '//' + location.host,
-            UserId: getCookie("CurrentUserId")
+            UserId: getCookie(currentUserIdCookieName)
         };
 
         console.log('Data to be sent:', JSON.stringify(data));
@@ -37,7 +39,7 @@ const createUrl = async () => {
         }
     }
     else {
-        document.getElementById("originalUrlValidation").innerHTML = "Url is not valid. Creation failed.";
+        document.getElementById(originalUrlValidationId).innerHTML = "Url is not valid. Creation failed.";
     }
 };
 
